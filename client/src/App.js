@@ -5,30 +5,37 @@ import axios from "axios";
 
 function App() {
 
-  const [state, setState] = useState({
-    APIresponse: []
-  });
+  const [users,setUsers] = useState([])
 
   useEffect(() => {
     axios.request({
-      url: "http://localhost:5000/",
-      method: "get"
+      url: "http://localhost:5000/users",
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Access-Control-Allow-Credentials": true
+      },
+      withCredentials: false
     })
     .then(response => {
-      console.log(response)
-      setState(prev => ({
-        ...prev,
-        APIresponse: response.data.info
-      }));
+      console.log(response.data)
+      setUsers(response.data)
     })
     .catch(function(error) {
       console.log(error);
     }); 
   }, [])
 
+  const userList = users.map((user, index) => {
+    return (
+      <p key={index}>email: {user.email}</p>
+    );
+  });
+
   return (
     <div className="App">
-    <p> {state.APIresponse}</p>
+    <div>{userList}</div>
     </div>
   );
 }
